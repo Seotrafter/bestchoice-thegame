@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoomLogic Quest - Zoombinis Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel='icon' href='/src/icons/logo.png' type='image/x-icon'>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        zoomorange: '#ff8000',
+                        zoomblue: '#a9c0e2',
+                        zoomdarkblue: '#262662',
+                        zoomwhite: '#ffffff'
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': {
+                                transform: 'translateY(0)'
+                            },
+                            '50%': {
+                                transform: 'translateY(-10px)'
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .bg-zoombini-pattern {
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M15 10a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10zM15 40a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10z" fill="%23262662" fill-opacity="0.1"/%3E%3C/svg%3E');
+        }
+
+        .hero-blob {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .hero-blob svg {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            transform: translate(-20%, -30%);
+            opacity: 0.3;
+        }
+
+        .game-features-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(38, 38, 98, 0.3);
+        }
+
+        .testimonial-card:hover {
+            transform: scale(1.02);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #262662;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff8000;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff9c40;
+        }
+
+        /* Floating animations */
+        @keyframes float-alternate {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-15px) rotate(3deg);
+            }
+
+            50% {
+                transform: translateY(-7px) rotate(-2deg);
+            }
+
+            75% {
+                transform: translateY(-12px) rotate(1deg);
+            }
+        }
+
+        .float-alternate {
+            animation: float-alternate 7s ease-in-out infinite;
+        }
+
+        /* Particles background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-zoomdarkblue text-zoomwhite bg-zoombini-pattern min-h-screen relative">
+    <!-- Animated Background Particles -->
+    <div id="particles-js"></div>
+
+    <!-- Header/Navigation -->
+    <header class="sticky top-0 z-50 backdrop-filter backdrop-blur-lg bg-zoomdarkblue/80 border-b border-zoomorange/30 shadow-lg">
+        <nav class="container mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                <a href="/" class="flex items-center">
+                    <div class="h-12 w-12 rounded-full bg-zoomorange flex items-center justify-center overflow-hidden border-2 border-zoomblue shadow-lg animate-pulse-slow">
+                        <i class="fas fa-puzzle-piece text-zoomdarkblue text-2xl"></i>
+                    </div>
+                    <span class="ml-3 text-2xl font-extrabold tracking-wider gradient-text bg-gradient-to-r from-zoomorange to-zoomblue bg-clip-text text-transparent">ZoomLogic Quest</span>
+                </a>
+            </div>
+
+            <div class="flex flex-wrap justify-center md:justify-end gap-x-1 gap-y-2">
+                <a href="/#features" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Features</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#gameplay" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Gameplay</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#puzzles" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Puzzles</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#reviews" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Reviews</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#download" class="relative px-6 py-2 rounded-full bg-zoomorange text-zoomdarkblue font-bold hover:bg-zoomblue transition-all duration-300 shadow-lg hover:shadow-zoomorange/50 ml-2 transform hover:scale-105">
+                    <i class="fas fa-download mr-2"></i>Download Now
+                </a>
+            </div>
+        </nav>
+    </header>
+    <!-- Terms & Conditions Hero Section -->
+    <section class="relative py-20 overflow-hidden">
+        <!-- Background Animation -->
+        <div class="absolute inset-0 bg-zoomdarkblue/90">
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml;charset=utf8,%3Csvg width=\" 60\" height=\"60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M15 15a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10zM15 45a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10z\" fill=\"%23ffffff\"/%3E%3C/svg%3E');"></div>
+            <div class="absolute top-0 left-0 w-80 h-80 bg-zoomorange opacity-5 rounded-full filter blur-3xl"></div>
+            <div class="absolute bottom-0 right-0 w-80 h-80 bg-zoomblue opacity-5 rounded-full filter blur-3xl"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-zoomorange to-zoomblue bg-clip-text text-transparent">
+                    Terms & Conditions
+                </h1>
+                <p class="text-xl text-zoomblue">
+                    Please read these terms and conditions carefully before using ZoomLogic Quest.
+                </p>
+                <div class="mt-6 flex justify-center">
+                    <div class="h-1 w-32 bg-gradient-to-r from-zoomorange to-zoomblue rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Terms & Conditions Content Section -->
+    <section class="py-16 bg-zoomdarkblue/80">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto bg-zoomdarkblue/60 backdrop-blur-md rounded-2xl p-8 border border-zoomblue/30 shadow-xl">
+                <!-- Introduction -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fas fa-file-contract"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">Welcome to ZoomLogic Quest!</h2>
+                    </div>
+
+                    <p class="text-zoomwhite/90 mb-4 leading-relaxed">
+                        These terms and conditions outline the rules and regulations for the use of ZoomLogic Quest's Website, located at https://bestchoice-thegame.com/.
+                    </p>
+
+                    <div class="bg-zoomorange/10 border border-zoomorange/30 rounded-xl p-6 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed flex items-start">
+                            <i class="fas fa-exclamation-circle text-zoomorange mt-1 mr-3"></i>
+                            <span>By accessing this website, we assume you accept these terms and conditions. Do not continue to use ZoomLogic Quest if you do not agree to take all of the terms and conditions stated on this page.</span>
+                        </p>
+                    </div>
+
+                    <p class="text-zoomwhite/90 leading-relaxed">
+                        The following terminology applies to these Terms and Conditions, Privacy Statement, and Disclaimer Notice and all Agreements: "Client", "You" and "Your" refers to you, the person logging onto this website and compliant with the Company's terms and conditions. "The Company", "Ourselves", "We", "Our" and "Us", refers to our Company. "Party", "Parties", or "Us", refers to both the Client and ourselves. All terms refer to the offer, acceptance, and consideration of payment necessary to undertake the process of our assistance to the Client in the most appropriate manner for the express purpose of meeting the Client's needs in respect of the provision of the Company's stated services, in accordance with and subject to the prevailing law of the Netherlands. Any use of the above terminology or other words in the singular, plural, capitalization, and/or he/she or they, are taken as interchangeable and therefore as referring to the same.
+                    </p>
+                </div>
+
+                <!-- Cookies -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue text-2xl mr-4">
+                            <i class="fas fa-cookie-bite"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomblue">Cookies</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomblue/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-4">
+                            We employ the use of cookies. By accessing ZoomLogic Quest, you agree to use cookies in agreement with the ZoomLogic Quest's Privacy Policy.
+                        </p>
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            Most interactive websites use cookies to let us retrieve the user's details for each visit. Cookies are used by our website to enable the functionality of certain areas to make it easier for people visiting our website. Some of our affiliate/advertising partners may also use cookies.
+                        </p>
+                    </div>
+                </div>
+                <!-- License -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fas fa-copyright"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">License</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomorange/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            Unless otherwise stated, ZoomLogic Quest and/or its licensors own the intellectual property rights for all material on ZoomLogic Quest. All intellectual property rights are reserved. You may access this from ZoomLogic Quest for your own personal use, subject to restrictions set in these terms and conditions.
+                        </p>
+
+                        <div class="bg-zoomdarkblue/60 p-6 rounded-lg border border-zoomblue/20 mb-6">
+                            <h3 class="text-xl font-bold text-zoomwhite mb-4">You must not:</h3>
+                            <ul class="space-y-3 pl-6">
+                                <li class="flex items-start">
+                                    <i class="fas fa-times text-zoomorange mt-1 mr-3"></i>
+                                    <span class="text-zoomwhite/90">Republish material from ZoomLogic Quest</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-times text-zoomorange mt-1 mr-3"></i>
+                                    <span class="text-zoomwhite/90">Sell, rent, or sub-license material from ZoomLogic Quest</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-times text-zoomorange mt-1 mr-3"></i>
+                                    <span class="text-zoomwhite/90">Reproduce, duplicate, or copy material from ZoomLogic Quest</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fas fa-times text-zoomorange mt-1 mr-3"></i>
+                                    <span class="text-zoomwhite/90">Redistribute content from ZoomLogic Quest</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            This Agreement shall begin on the date hereof.
+                        </p>
+                    </div>
+
+                    <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                        Parts of this website offer an opportunity for users to post and exchange opinions and information in certain areas of the website. ZoomLogic Quest does not filter, edit, publish, or review Comments prior to their presence on the website. Comments do not reflect the views and opinions of ZoomLogic Quest, its agents, and/or affiliates. Comments reflect the views and opinions of the person who posts them. To the extent permitted by applicable laws, ZoomLogic Quest shall not be liable for the Comments or for any liability, damages, or expenses caused and/or suffered as a result of any use of and/or posting of and/or appearance of the Comments on this website.
+                    </p>
+
+                    <div class="bg-zoomblue/10 border border-zoomblue/30 rounded-xl p-6 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed flex items-start">
+                            <i class="fas fa-info-circle text-zoomblue mt-1 mr-3"></i>
+                            <span>ZoomLogic Quest reserves the right to monitor all Comments and to remove any Comments that can be considered inappropriate, offensive, or that cause a breach of these Terms and Conditions.</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- User Warranties -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue text-2xl mr-4">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomblue">User Warranties</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomblue/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            You warrant and represent that:
+                        </p>
+
+                        <ul class="space-y-4 pl-6 mb-6">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomblue mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">You are entitled to post the Comments on our website and have all necessary licenses and consents to do so;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomblue mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">The Comments do not invade any intellectual property rights, including without limitation copyright, patent, or trademark of any third party;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomblue mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">The Comments do not contain any defamatory, libelous, offensive, indecent, or otherwise unlawful material which is an invasion of privacy;</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomblue mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">The Comments will not be used to solicit or promote business or custom or present commercial activities or unlawful activity.</span>
+                            </li>
+                        </ul>
+
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            You hereby grant ZoomLogic Quest a non-exclusive license to use, reproduce, edit, and authorize others to use, reproduce, and edit any of your Comments in any and all forms, formats, or media.
+                        </p>
+                    </div>
+                </div>
+                <!-- Hyperlinking to our Content -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">Hyperlinking to our Content</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomorange/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            The following organizations may link to our Website without prior written approval:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20 flex items-center">
+                                <div class="w-8 h-8 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-3">
+                                    <i class="fas fa-landmark"></i>
+                                </div>
+                                <span class="text-zoomwhite/90">Government agencies</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20 flex items-center">
+                                <div class="w-8 h-8 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-3">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <span class="text-zoomwhite/90">Search engines</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20 flex items-center">
+                                <div class="w-8 h-8 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-3">
+                                    <i class="fas fa-newspaper"></i>
+                                </div>
+                                <span class="text-zoomwhite/90">News organizations</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20 flex items-center">
+                                <div class="w-8 h-8 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-3">
+                                    <i class="fas fa-sitemap"></i>
+                                </div>
+                                <span class="text-zoomwhite/90">Online directory distributors</span>
+                            </div>
+                        </div>
+
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            These organizations may link to our home page, publications, or other Website information so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement, or approval of the linking party and its products and/or services; and (c) fits within the context of the linking party's site.
+                        </p>
+
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            We may consider and approve other link requests from the following types of organizations:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20">
+                                <span class="text-zoomwhite/90">• Commonly-known consumer and/or business information sources</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20">
+                                <span class="text-zoomwhite/90">• Dot.com community sites</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20">
+                                <span class="text-zoomwhite/90">• Associations or other groups representing charities</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20">
+                                <span class="text-zoomwhite/90">• Online directory distributors</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20">
+                                <span class="text-zoomwhite/90">• Internet portals</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20">
+                                <span class="text-zoomwhite/90">• Accounting, law, and consulting firms</span>
+                            </div>
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20 md:col-span-2">
+                                <span class="text-zoomwhite/90">• Educational institutions and trade associations</span>
+                            </div>
+                        </div>
+
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            We will approve link requests from these organizations if we decide that: (a) the link would not make us look unfavorably to ourselves or to our accredited businesses; (b) the organization does not have any negative records with us; (c) the benefit to us from the visibility of the hyperlink compensates for the absence of ZoomLogic Quest; and (d) the link is in the context of general resource information.
+                        </p>
+
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            These organizations may link to our home page so long as the link: (a) is not in any way deceptive; (b) does not falsely imply sponsorship, endorsement, or approval of the linking party and its products or services; and (c) fits within the context of the linking party's site.
+                        </p>
+
+                        <div class="bg-zoomorange/10 p-6 rounded-lg border border-zoomorange/30 mb-6">
+                            <div class="flex items-start">
+                                <i class="fas fa-envelope text-zoomorange mt-1 mr-3 text-xl"></i>
+                                <div>
+                                    <p class="text-zoomwhite/90 leading-relaxed mb-2">
+                                        If you are one of the organizations listed above and are interested in linking to our website, you must inform us by sending an email to ZoomLogic Quest. Please include your name, your organization name, contact information, as well as the URL of your site, a list of any URLs from which you intend to link to our Website, and a list of the URLs on our site to which you would like to link. Wait 2-3 weeks for a response.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            Approved organizations may hyperlink to our Website as follows:
+                        </p>
+
+                        <ul class="space-y-3 pl-6 mb-6">
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-zoomblue mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">By use of our corporate name; or</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-zoomblue mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">By use of the uniform resource locator being linked to; or</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check text-zoomblue mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">By use of any other description of our Website being linked to that makes sense within the context and format of content on the linking party's site.</span>
+                            </li>
+                        </ul>
+
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            No use of ZoomLogic Quest's logo or other artwork will be allowed for linking absent a trademark license agreement.
+                        </p>
+                    </div>
+                </div>
+                <!-- iFrames -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue text-2xl mr-4">
+                            <i class="fas fa-window-restore"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomblue">iFrames</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomblue/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            Without prior approval and written permission, you may not create frames around our Webpages that alter in any way the visual presentation or appearance of our Website.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Content Liability -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">Content Liability</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomorange/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            We shall not be held responsible for any content that appears on your Website. You agree to protect and defend us against all claims arising on your Website. No link(s) should appear on any Website that may be interpreted as libelous, obscene, or criminal, or which infringes, otherwise violates, or advocates the infringement or other violation of, any third-party rights.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Reservation of Rights -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue text-2xl mr-4">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomblue">Reservation of Rights</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomblue/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            We reserve the right to request that you remove all links or any particular link to our Website. You agree to immediately remove all links to our Website upon request. We also reserve the right to amend these terms and conditions and its linking policy at any time. By continuously linking to our Website, you agree to be bound by and follow these linking terms and conditions.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Disclaimer -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fas fa-gavel"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">Disclaimer</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomorange/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-4">
+                            To the maximum extent permitted by applicable law, we exclude all representations, warranties, and conditions relating to our website and the use of this website.
+                        </p>
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            As long as the website and the information and services on the website are provided free of charge, we will not be liable for any loss or damage of any nature.
+                        </p>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Last Updated Section -->
+            <div class="mt-8 text-center text-zoomwhite/60 text-sm">
+                Last Updated: March 2025
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Home Banner -->
+    <section class="py-12 bg-gradient-to-r from-zoomorange/20 to-zoomblue/20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-2xl font-bold text-zoomwhite mb-2">Ready to Play?</h3>
+                    <p class="text-zoomblue">Return to the game and continue your puzzle adventure!</p>
+                </div>
+                <a href="/" class="px-8 py-4 bg-zoomorange text-zoomdarkblue rounded-xl text-xl font-bold hover:bg-zoomblue transition-all duration-300 shadow-xl hover:shadow-zoomorange/50 transform hover:scale-105">
+                    <i class="fas fa-home mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-zoomdarkblue/90 border-t border-zoomorange/20 py-10 relative">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="flex items-center mb-6 md:mb-0">
+                    <a href="/" class="flex items-center">
+                        <div class="h-10 w-10 rounded-full bg-zoomorange flex items-center justify-center overflow-hidden border-2 border-zoomblue">
+                            <i class="fas fa-puzzle-piece text-zoomdarkblue"></i>
+                        </div>
+                        <span class="ml-3 text-xl font-bold text-zoomwhite">ZoomLogic Quest</span>
+                    </a>
+                </div>
+
+
+            </div>
+
+            <div class="border-t border-zoomblue/20 py-6 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-zoomwhite/60 text-sm mb-4 md:mb-0">
+                    &copy; 2025 ZoomLogic Quest. All rights reserved.
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+                    <a href="/Service347/" class="text-zoomwhite/60 hover:text-zoomorange text-sm transition-colors duration-300">Privacy Policy</a>
+                    <a href="/Service347/" class="text-zoomwhite/60 hover:text-zoomorange text-sm transition-colors duration-300">Terms of Service</a>
+                    <a href="/Cookie992/" class="text-zoomwhite/60 hover:text-zoomorange text-sm transition-colors duration-300">Cookie Policy</a>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    
+</body>
+
+</html>
+
+
+<?php
+$cookieConsentHtml = '
+<style>
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 101;
+    background: rgba(38, 38, 98, 0.95); /* Using zoomdarkblue with transparency */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    border-top: 3px solid #ff8000; /* Using zoomorange color */
+}
+
+.cookie-container {
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cookie-content {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.cookie-title {
+    font-size: 1.1rem;
+    color: #ffffff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: 1.5rem;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.cookie-title i {
+    color: #ff8000; /* Using zoomorange color */
+    font-size: 1.25rem;
+}
+
+.cookie-text {
+    color: #a9c0e2; /* Using zoomblue color */
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 300; 
+}
+
+.cookie-link {
+    color: #ffffff; /* White text */
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cookie-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #ff8000; /* Using zoomorange color */
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.cookie-link:hover::after {
+    transform: scaleX(1);
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.cookie-button-reject,
+.cookie-button-accept {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50px; /* Rounded buttons */
+}
+
+.cookie-button-reject {
+    background: rgba(169, 192, 226, 0.1); /* Using zoomblue with transparency */
+    color: #ffffff;
+    border: 2px solid rgba(169, 192, 226, 0.3); /* Using zoomblue with transparency */
+}
+
+.cookie-button-reject:hover {
+    background: rgba(169, 192, 226, 0.2);
+    transform: translateY(-2px);
+    border-color: rgba(169, 192, 226, 0.5);
+}
+
+.cookie-button-accept {
+    background: linear-gradient(to right, #ff8000, #ff9c40); /* Gradient with zoomorange colors */
+    color: #262662; /* Using zoomdarkblue for text */
+    border: none;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(255, 128, 0, 0.3);
+}
+
+.cookie-button-accept:hover {
+    background: linear-gradient(to right, #ff9c40, #ffa64d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 128, 0, 0.4);
+}
+
+@media (max-width: 992px) {
+    .cookie-container {
+        flex-direction: column;
+        padding: 1.25rem;
+    }
+
+    .cookie-content {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+        width: 100%;
+    }
+
+    .cookie-title {
+        margin-bottom: 0.75rem;
+    }
+
+    .cookie-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 576px) {
+    .cookie-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
+    }
+    
+    .cookie-button-reject,
+    .cookie-button-accept {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+<div id="cookieConsent" class="cookie-consent">
+    <div class="cookie-container">
+        <div class="cookie-content">
+            <h3 class="cookie-title">
+                <i class="fas fa-cookie-bite"></i>
+                Cookie Policy
+            </h3>
+            <p class="cookie-text">
+                ZoomLogic Quest uses cookies to enhance your gaming experience. By continuing to use our website, you agree to the use of cookies. For more information, you can read our
+                <a href="/Policy356/" class="cookie-link">Privacy Policy</a>,
+                <a href="/Service347/" class="cookie-link">Terms of Service</a>,
+                and
+                <a href="/Cookie992/" class="cookie-link">Cookie Policy</a>.
+            </p>
+        </div>
+        
+        <div class="cookie-buttons">
+            <button id="rejectCookies" class="cookie-button-reject">
+                Reject
+            </button>
+            <button id="acceptCookies" class="cookie-button-accept">
+                Accept
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+   const cookieConsent = document.getElementById("cookieConsent");
+   const acceptBtn = document.getElementById("acceptCookies");
+   const rejectBtn = document.getElementById("rejectCookies");
+   
+   if (!getCookie("aprenderd_cookie_consent")) {
+       setTimeout(() => {
+           cookieConsent.style.transform = "translateX(0)";
+       }, 1000);
+   }
+
+   function getCookie(name) {
+       let matches = document.cookie.match(new RegExp(
+           "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"
+       ));
+       return matches ? decodeURIComponent(matches[1]) : undefined;
+   }
+   
+   function setCookie(name, value, days) {
+       const date = new Date();
+       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+       const expires = "; expires=" + date.toUTCString();
+       document.cookie = name + "=" + value + expires + "; path=/; SameSite=Strict; Secure";
+   }
+
+   function handleConsent(consent) {
+       setCookie("aprenderd_cookie_consent", consent, 365);
+       cookieConsent.style.transform = "translateX(120%)";
+       
+       setTimeout(() => {
+           cookieConsent.remove();
+       }, 500);
+   }
+
+   acceptBtn.addEventListener("click", () => handleConsent("accepted"));
+   rejectBtn.addEventListener("click", () => handleConsent("rejected"));
+});
+</script>
+';
+
+if (!isset($_COOKIE["aprenderd_cookie_consent"])) {
+    echo $cookieConsentHtml;
+}
+?>

@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZoomLogic Quest - Zoombinis Adventure</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel='icon' href='/src/icons/logo.png' type='image/x-icon'>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        zoomorange: '#ff8000',
+                        zoomblue: '#a9c0e2',
+                        zoomdarkblue: '#262662',
+                        zoomwhite: '#ffffff'
+                    },
+                    animation: {
+                        'float': 'float 3s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'spin-slow': 'spin 8s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': {
+                                transform: 'translateY(0)'
+                            },
+                            '50%': {
+                                transform: 'translateY(-10px)'
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .bg-zoombini-pattern {
+            background-image: url('data:image/svg+xml;charset=utf8,%3Csvg width="60" height="60" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M15 10a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10zM15 40a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10z" fill="%23262662" fill-opacity="0.1"/%3E%3C/svg%3E');
+        }
+
+        .hero-blob {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .hero-blob svg {
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            transform: translate(-20%, -30%);
+            opacity: 0.3;
+        }
+
+        .game-features-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(38, 38, 98, 0.3);
+        }
+
+        .testimonial-card:hover {
+            transform: scale(1.02);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #262662;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff8000;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff9c40;
+        }
+
+        /* Floating animations */
+        @keyframes float-alternate {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            25% {
+                transform: translateY(-15px) rotate(3deg);
+            }
+
+            50% {
+                transform: translateY(-7px) rotate(-2deg);
+            }
+
+            75% {
+                transform: translateY(-12px) rotate(1deg);
+            }
+        }
+
+        .float-alternate {
+            animation: float-alternate 7s ease-in-out infinite;
+        }
+
+        /* Particles background */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body class="bg-zoomdarkblue text-zoomwhite bg-zoombini-pattern min-h-screen relative">
+    <!-- Animated Background Particles -->
+    <div id="particles-js"></div>
+
+    <!-- Header/Navigation -->
+    <header class="sticky top-0 z-50 backdrop-filter backdrop-blur-lg bg-zoomdarkblue/80 border-b border-zoomorange/30 shadow-lg">
+        <nav class="container mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between">
+            <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                <a href="/" class="flex items-center">
+                    <div class="h-12 w-12 rounded-full bg-zoomorange flex items-center justify-center overflow-hidden border-2 border-zoomblue shadow-lg animate-pulse-slow">
+                        <i class="fas fa-puzzle-piece text-zoomdarkblue text-2xl"></i>
+                    </div>
+                    <span class="ml-3 text-2xl font-extrabold tracking-wider gradient-text bg-gradient-to-r from-zoomorange to-zoomblue bg-clip-text text-transparent">ZoomLogic Quest</span>
+                </a>
+            </div>
+
+            <div class="flex flex-wrap justify-center md:justify-end gap-x-1 gap-y-2">
+                <a href="/#features" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Features</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#gameplay" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Gameplay</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#puzzles" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Puzzles</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#reviews" class="relative px-4 py-2 rounded-full bg-zoomorange/20 hover:bg-zoomorange/40 transition-all duration-300 text-zoomwhite font-medium mx-1 group overflow-hidden">
+                    <span class="relative z-10">Reviews</span>
+                    <span class="absolute inset-0 bg-gradient-to-r from-zoomorange to-zoomorange/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform origin-left"></span>
+                </a>
+                <a href="/#download" class="relative px-6 py-2 rounded-full bg-zoomorange text-zoomdarkblue font-bold hover:bg-zoomblue transition-all duration-300 shadow-lg hover:shadow-zoomorange/50 ml-2 transform hover:scale-105">
+                    <i class="fas fa-download mr-2"></i>Download Now
+                </a>
+            </div>
+        </nav>
+    </header>
+    <!-- Cookie Policy Hero Section -->
+    <section class="relative py-20 overflow-hidden">
+        <!-- Background Animation -->
+        <div class="absolute inset-0 bg-zoomdarkblue/90">
+            <div class="absolute inset-0 opacity-10" style="background-image: url('data:image/svg+xml;charset=utf8,%3Csvg width=\" 60\" height=\"60\" xmlns=\"http://www.w3.org/2000/svg\"%3E%3Cpath d=\"M15 15a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10zM15 45a5 5 0 110 10 5 5 0 010-10zm30 0a5 5 0 110 10 5 5 0 010-10z\" fill=\"%23ffffff\"/%3E%3C/svg%3E');"></div>
+            <div class="absolute top-0 left-0 w-80 h-80 bg-zoomorange opacity-5 rounded-full filter blur-3xl animate-pulse-slow"></div>
+            <div class="absolute bottom-0 right-0 w-80 h-80 bg-zoomblue opacity-5 rounded-full filter blur-3xl animate-pulse-slow" style="animation-delay: 2s"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-zoomorange to-zoomblue bg-clip-text text-transparent">
+                    Cookie Policy
+                </h1>
+                <p class="text-xl text-zoomblue">
+                    Information about how ZoomLogic Quest uses cookies to enhance your gaming experience
+                </p>
+                <div class="mt-6 flex justify-center">
+                    <div class="h-1 w-32 bg-gradient-to-r from-zoomorange to-zoomblue rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cookie Policy Content Section -->
+    <section class="py-16 bg-zoomdarkblue/80">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto bg-zoomdarkblue/60 backdrop-blur-md rounded-2xl p-8 border border-zoomblue/30 shadow-xl">
+                <!-- Introduction -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fas fa-cookie-bite"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">What Are Cookies?</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomorange/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-4">
+                            Cookies are small text files that are placed on your device when you visit a website. They are widely used to make websites work more efficiently and provide information to the website owners. Cookies enhance your browsing experience by:
+                        </p>
+
+                        <ul class="space-y-3 pl-6 mb-4">
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomorange mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">Remembering your preferences and settings</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomorange mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">Helping you navigate between pages efficiently</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomorange mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">Understanding how you use the website</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-check-circle text-zoomorange mt-1 mr-3"></i>
+                                <span class="text-zoomwhite/90">Personalizing your experience based on your interests</span>
+                            </li>
+                        </ul>
+
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            Most web browsers allow you to control cookies through their settings. However, if you limit the ability of websites to set cookies, you may impact your overall user experience.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- How We Use Cookies -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue text-2xl mr-4">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomblue">How We Use Cookies</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomblue/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            ZoomLogic Quest uses cookies for various purposes, and we may update our Cookie Policy periodically to reflect changes in our practices. Here's how we use cookies on our website:
+                        </p>
+
+                        <div class="space-y-6">
+                            <!-- Essential Cookies -->
+                            <div class="bg-zoomdarkblue/60 p-6 rounded-lg border border-zoomorange/20">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-4">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-zoomorange">Essential Cookies</h3>
+                                </div>
+                                <p class="text-zoomwhite/90 leading-relaxed mb-3">
+                                    These cookies are necessary for the website to function properly. They enable core functionality such as security, network management, and account access. You may disable these by changing your browser settings, but this may affect how the website functions.
+                                </p>
+                                <div class="flex items-center justify-between pt-2 border-t border-zoomorange/10">
+                                    <span class="text-zoomwhite/60 text-sm">Always active</span>
+                                    <span class="px-3 py-1 bg-zoomorange/20 text-zoomorange rounded-full text-sm">Required</span>
+                                </div>
+                            </div>
+
+                            <!-- Functional Cookies -->
+                            <div class="bg-zoomdarkblue/60 p-6 rounded-lg border border-zoomblue/20">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue mr-4">
+                                        <i class="fas fa-sliders-h"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-zoomblue">Functional Cookies</h3>
+                                </div>
+                                <p class="text-zoomwhite/90 leading-relaxed mb-3">
+                                    These cookies allow the website to provide enhanced functionality and personalization. They may be set by us or by third-party providers whose services we have added to our pages. If you do not allow these cookies, some or all of these services may not function properly.
+                                </p>
+                                <div class="flex items-center justify-between pt-2 border-t border-zoomblue/10">
+                                    <span class="text-zoomwhite/60 text-sm">Session & Persistent</span>
+                                    <span class="px-3 py-1 bg-zoomblue/20 text-zoomblue rounded-full text-sm">Functional</span>
+                                </div>
+                            </div>
+                            <!-- Analytics Cookies -->
+                            <div class="bg-zoomdarkblue/60 p-6 rounded-lg border border-zoomorange/20">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-4">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-zoomorange">Analytics Cookies</h3>
+                                </div>
+                                <p class="text-zoomwhite/90 leading-relaxed mb-3">
+                                    These cookies help us understand how visitors interact with our website by collecting and reporting information anonymously. They allow us to count visits and traffic sources so we can measure and improve the performance of our site. If you do not allow these cookies, we will not know when you have visited our site.
+                                </p>
+                                <div class="flex items-center justify-between pt-2 border-t border-zoomorange/10">
+                                    <span class="text-zoomwhite/60 text-sm">Persistent (up to 2 years)</span>
+                                    <span class="px-3 py-1 bg-zoomorange/20 text-zoomorange rounded-full text-sm">Statistics</span>
+                                </div>
+                            </div>
+
+                            <!-- Marketing Cookies -->
+                            <div class="bg-zoomdarkblue/60 p-6 rounded-lg border border-zoomblue/20">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-10 h-10 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue mr-4">
+                                        <i class="fas fa-ad"></i>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-zoomblue">Marketing Cookies</h3>
+                                </div>
+                                <p class="text-zoomwhite/90 leading-relaxed mb-3">
+                                    These cookies may be set through our site by our advertising partners. They may be used by those companies to build a profile of your interests and show you relevant advertisements on other sites. They do not directly store personal information but are based on uniquely identifying your browser and internet device. If you do not allow these cookies, you will experience less targeted advertising.
+                                </p>
+                                <div class="flex items-center justify-between pt-2 border-t border-zoomblue/10">
+                                    <span class="text-zoomwhite/60 text-sm">Persistent (up to 1 year)</span>
+                                    <span class="px-3 py-1 bg-zoomblue/20 text-zoomblue rounded-full text-sm">Marketing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Analytics Cookies -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">Google Analytics Cookies</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomorange/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            ZoomLogic Quest uses Google Analytics, a web analytics service provided by Google, Inc. Google Analytics uses cookies to help us analyze how users use our site. The information generated by the cookie about your use of the website is generally transmitted to and stored on Google's servers in the United States.
+                        </p>
+
+                        <div class="bg-zoomdarkblue/60 p-6 rounded-lg mb-6">
+                            <h3 class="text-xl font-bold text-zoomwhite mb-4">Common Google Analytics Cookies Include:</h3>
+
+                            <div class="space-y-4">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                    <div class="bg-zoomdarkblue/80 p-3 rounded border border-zoomblue/20">
+                                        <span class="font-mono text-zoomorange">_ga</span>
+                                        <p class="text-zoomwhite/80 mt-1">Registers a unique ID to generate statistical data on website usage</p>
+                                    </div>
+                                    <div class="bg-zoomdarkblue/80 p-3 rounded border border-zoomblue/20">
+                                        <span class="font-mono text-zoomorange">_gat</span>
+                                        <p class="text-zoomwhite/80 mt-1">Used to throttle request rate</p>
+                                    </div>
+                                    <div class="bg-zoomdarkblue/80 p-3 rounded border border-zoomblue/20">
+                                        <span class="font-mono text-zoomorange">_gid</span>
+                                        <p class="text-zoomwhite/80 mt-1">Registers a unique ID for statistical purposes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            We have implemented Google Analytics features based on Display Advertising (Google Analytics Demographics and Interest Reporting). You can opt-out of Google Analytics for Display Advertising and customize Google Display Network ads using the Google Ads Settings or by installing the <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" class="text-zoomorange hover:text-zoomblue underline transition-colors duration-300">Google Analytics Opt-out Browser Add-on</a>.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Third-Party Cookies -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue text-2xl mr-4">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomblue">Third-Party Cookies</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomblue/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            In addition to our own cookies, we may also use various third-party cookies to report usage statistics, deliver advertisements, and so on. These cookies may be set when you visit our website or when you interact with certain features:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <!-- Google -->
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomorange/20 flex flex-col h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-8 h-8 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-3">
+                                        <i class="fab fa-google"></i>
+                                    </div>
+                                    <h4 class="font-bold text-zoomorange">Google</h4>
+                                </div>
+                                <p class="text-zoomwhite/80 text-sm flex-grow">
+                                    Used for Google Analytics, Google Ads, and other Google services to track user behavior and serve relevant ads.
+                                </p>
+                                <a href="https://policies.google.com/technologies/cookies" target="_blank" class="text-zoomblue hover:text-zoomorange text-xs mt-3 transition-colors duration-300">Privacy Policy</a>
+                            </div>
+
+                            <!-- Facebook -->
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20 flex flex-col h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-8 h-8 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue mr-3">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </div>
+                                    <h4 class="font-bold text-zoomblue">Facebook</h4>
+                                </div>
+                                <p class="text-zoomwhite/80 text-sm flex-grow">
+                                    Used to track the use of social plugins, analyze site usage, and serve targeted ads on Facebook.
+                                </p>
+                                <a href="https://www.facebook.com/policy/cookies/" target="_blank" class="text-zoomblue hover:text-zoomorange text-xs mt-3 transition-colors duration-300">Privacy Policy</a>
+                            </div>
+                            <!-- Unity -->
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomorange/20 flex flex-col h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-8 h-8 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mr-3">
+                                        <i class="fas fa-gamepad"></i>
+                                    </div>
+                                    <h4 class="font-bold text-zoomorange">Unity</h4>
+                                </div>
+                                <p class="text-zoomwhite/80 text-sm flex-grow">
+                                    Used to deliver game content, analytics, and improve the performance of our games.
+                                </p>
+                                <a href="https://unity3d.com/legal/privacy-policy" target="_blank" class="text-zoomblue hover:text-zoomorange text-xs mt-3 transition-colors duration-300">Privacy Policy</a>
+                            </div>
+
+                            <!-- AdMob -->
+                            <div class="bg-zoomdarkblue/60 p-4 rounded-lg border border-zoomblue/20 flex flex-col h-full">
+                                <div class="flex items-center mb-3">
+                                    <div class="w-8 h-8 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue mr-3">
+                                        <i class="fas fa-mobile-alt"></i>
+                                    </div>
+                                    <h4 class="font-bold text-zoomblue">AdMob</h4>
+                                </div>
+                                <p class="text-zoomwhite/80 text-sm flex-grow">
+                                    Google's mobile advertising platform used to serve ads within our mobile applications.
+                                </p>
+                                <a href="https://policies.google.com/technologies/ads" target="_blank" class="text-zoomblue hover:text-zoomorange text-xs mt-3 transition-colors duration-300">Privacy Policy</a>
+                            </div>
+                        </div>
+
+                        <div class="bg-zoomorange/10 p-4 rounded-lg border border-zoomorange/30 mb-6">
+                            <div class="flex items-start">
+                                <i class="fas fa-info-circle text-zoomorange mt-1 mr-3"></i>
+                                <p class="text-zoomwhite/90 text-sm">
+                                    Please note that we do not have direct control over the cookies placed by these third parties. We recommend reviewing the respective privacy policies of these providers for more information about their practices.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Managing Your Cookie Preferences -->
+                <div class="mb-12">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange text-2xl mr-4">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomorange">Managing Your Cookie Preferences</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomorange/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed mb-6">
+                            You have several options to manage your cookie preferences:
+                        </p>
+
+                        <div class="space-y-6">
+                            <!-- Browser Settings -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-10 h-10 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue mt-1 mr-4">
+                                    <i class="fas fa-browser"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-zoomblue mb-2">Browser Settings</h3>
+                                    <p class="text-zoomwhite/90 mb-4">
+                                        Most web browsers allow you to control cookies through their settings preferences. Here's how to manage cookies in popular browsers:
+                                    </p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                        <a href="https://support.google.com/chrome/answer/95647" target="_blank" class="bg-zoomdarkblue/60 p-3 rounded border border-zoomblue/20 hover:border-zoomblue/40 transition-colors duration-300 flex items-center">
+                                            <i class="fab fa-chrome text-zoomorange mr-2"></i>
+                                            <span class="text-zoomwhite">Google Chrome</span>
+                                        </a>
+                                        <a href="https://support.mozilla.org/en-US/kb/enhanced-tracking-protection-firefox-desktop" target="_blank" class="bg-zoomdarkblue/60 p-3 rounded border border-zoomblue/20 hover:border-zoomblue/40 transition-colors duration-300 flex items-center">
+                                            <i class="fab fa-firefox-browser text-zoomorange mr-2"></i>
+                                            <span class="text-zoomwhite">Mozilla Firefox</span>
+                                        </a>
+                                        <a href="https://support.apple.com/guide/safari/manage-cookies-and-website-data-sfri11471/" target="_blank" class="bg-zoomdarkblue/60 p-3 rounded border border-zoomblue/20 hover:border-zoomblue/40 transition-colors duration-300 flex items-center">
+                                            <i class="fab fa-safari text-zoomorange mr-2"></i>
+                                            <span class="text-zoomwhite">Safari</span>
+                                        </a>
+                                        <a href="https://support.microsoft.com/en-us/microsoft-edge/delete-cookies-in-microsoft-edge-63947406-40ac-c3b8-57b9-2a946a29ae09" target="_blank" class="bg-zoomdarkblue/60 p-3 rounded border border-zoomblue/20 hover:border-zoomblue/40 transition-colors duration-300 flex items-center">
+                                            <i class="fab fa-edge text-zoomorange mr-2"></i>
+                                            <span class="text-zoomwhite">Microsoft Edge</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Our Cookie Banner -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-10 h-10 bg-zoomorange/20 rounded-full flex items-center justify-center text-zoomorange mt-1 mr-4">
+                                    <i class="fas fa-sliders-h"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-zoomorange mb-2">Cookie Consent Banner</h3>
+                                    <p class="text-zoomwhite/90 mb-4">
+                                        When you first visit our website, you'll be presented with a cookie banner that allows you to select which categories of cookies you wish to accept. You can change your preferences at any time by clicking the "Cookie Settings" link in the footer of our website.
+                                    </p>
+                                    <div class="bg-zoomdarkblue/60 p-4 rounded border border-zoomorange/20 inline-block">
+                                        <button class="px-4 py-2 bg-zoomorange text-zoomdarkblue rounded-lg font-bold hover:bg-zoomblue transition-all duration-300">
+                                            Update Cookie Preferences
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Third-Party Opt-Out Tools -->
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 w-10 h-10 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue mt-1 mr-4">
+                                    <i class="fas fa-ban"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-zoomblue mb-2">Opt-Out Tools</h3>
+                                    <p class="text-zoomwhite/90 mb-4">
+                                        You can also use these industry tools to manage your preferences for various advertising networks:
+                                    </p>
+                                    <ul class="space-y-2 pl-6 mb-4">
+                                        <li class="flex items-start">
+                                            <i class="fas fa-external-link-alt text-zoomorange mt-1 mr-3"></i>
+                                            <a href="https://www.youronlinechoices.eu/" target="_blank" class="text-zoomblue hover:text-zoomorange transition-colors duration-300">European Interactive Digital Advertising Alliance (EDAA)</a>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-external-link-alt text-zoomorange mt-1 mr-3"></i>
+                                            <a href="https://www.networkadvertising.org/choices/" target="_blank" class="text-zoomblue hover:text-zoomorange transition-colors duration-300">Network Advertising Initiative (NAI)</a>
+                                        </li>
+                                        <li class="flex items-start">
+                                            <i class="fas fa-external-link-alt text-zoomorange mt-1 mr-3"></i>
+                                            <a href="https://optout.aboutads.info/" target="_blank" class="text-zoomblue hover:text-zoomorange transition-colors duration-300">Digital Advertising Alliance (DAA)</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Changes to This Cookie Policy -->
+                <div class="mb-8">
+                    <div class="flex items-center mb-6">
+                        <div class="flex-shrink-0 w-12 h-12 bg-zoomblue/20 rounded-full flex items-center justify-center text-zoomblue text-2xl mr-4">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-zoomblue">Changes to This Cookie Policy</h2>
+                    </div>
+
+                    <div class="bg-zoomdarkblue/40 backdrop-blur-sm p-6 rounded-xl border border-zoomblue/20 mb-6">
+                        <p class="text-zoomwhite/90 leading-relaxed">
+                            We may update our Cookie Policy from time to time. We will notify you of any changes by posting the new Cookie Policy on this page and updating the "Last Updated" date. You are advised to review this Cookie Policy periodically for any changes. Changes to this Cookie Policy are effective when they are posted on this page.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="p-6 bg-gradient-to-br from-zoomorange/10 to-zoomblue/10 rounded-xl border border-zoomwhite/10">
+                    <h2 class="text-2xl font-bold mb-4 text-zoomwhite">Contact Information</h2>
+                    <p class="text-zoomwhite/90 mb-6">
+                        If you have any questions about our Cookie Policy, how we use cookies, or your choices regarding cookies, please contact us:
+                    </p>
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <a href="mailto:privacy@bestchoice-thegame.com" class="inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-zoomorange to-zoomblue text-zoomwhite font-bold rounded-xl transition-all duration-300 shadow-lg hover:shadow-zoomorange/50 transform hover:translate-y-1">
+                            <i class="fas fa-envelope mr-2"></i>Email Us
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Last Updated Section -->
+            <div class="mt-8 text-center text-zoomwhite/60 text-sm">
+                Last Updated: March 2025
+            </div>
+        </div>
+    </section>
+
+    <!-- Back to Home Banner -->
+    <section class="py-12 bg-gradient-to-r from-zoomorange/20 to-zoomblue/20">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-2xl font-bold text-zoomwhite mb-2">Ready to Play?</h3>
+                    <p class="text-zoomblue">Return to the game and continue your puzzle adventure!</p>
+                </div>
+                <a href="/" class="px-8 py-4 bg-zoomorange text-zoomdarkblue rounded-xl text-xl font-bold hover:bg-zoomblue transition-all duration-300 shadow-xl hover:shadow-zoomorange/50 transform hover:scale-105">
+                    <i class="fas fa-home mr-2"></i>Back to Home
+                </a>
+            </div>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer class="bg-zoomdarkblue/90 border-t border-zoomorange/20 py-10 relative">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="flex items-center mb-6 md:mb-0">
+                    <a href="/" class="flex items-center">
+                        <div class="h-10 w-10 rounded-full bg-zoomorange flex items-center justify-center overflow-hidden border-2 border-zoomblue">
+                            <i class="fas fa-puzzle-piece text-zoomdarkblue"></i>
+                        </div>
+                        <span class="ml-3 text-xl font-bold text-zoomwhite">ZoomLogic Quest</span>
+                    </a>
+                </div>
+
+
+            </div>
+
+            <div class="border-t border-zoomblue/20 py-6 flex flex-col md:flex-row justify-between items-center">
+                <div class="text-zoomwhite/60 text-sm mb-4 md:mb-0">
+                    &copy; 2025 ZoomLogic Quest. All rights reserved.
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-x-6 gap-y-2">
+                    <a href="/Service347/" class="text-zoomwhite/60 hover:text-zoomorange text-sm transition-colors duration-300">Privacy Policy</a>
+                    <a href="/Service347/" class="text-zoomwhite/60 hover:text-zoomorange text-sm transition-colors duration-300">Terms of Service</a>
+                    <a href="/Cookie992/" class="text-zoomwhite/60 hover:text-zoomorange text-sm transition-colors duration-300">Cookie Policy</a>
+
+                </div>
+            </div>
+        </div>
+    </footer>
+
+  
+</body>
+
+</html>
+
+
+<?php
+$cookieConsentHtml = '
+<style>
+.cookie-consent {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 101;
+    background: rgba(38, 38, 98, 0.95); /* Using zoomdarkblue with transparency */
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    transform: translateY(100%);
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    border-top: 3px solid #ff8000; /* Using zoomorange color */
+}
+
+.cookie-container {
+    padding: 1.25rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.cookie-content {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.cookie-title {
+    font-size: 1.1rem;
+    color: #ffffff;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-right: 1.5rem;
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.cookie-title i {
+    color: #ff8000; /* Using zoomorange color */
+    font-size: 1.25rem;
+}
+
+.cookie-text {
+    color: #a9c0e2; /* Using zoomblue color */
+    font-size: 0.9rem;
+    margin: 0;
+    line-height: 1.5;
+    font-weight: 300; 
+}
+
+.cookie-link {
+    color: #ffffff; /* White text */
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cookie-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: #ff8000; /* Using zoomorange color */
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.cookie-link:hover::after {
+    transform: scaleX(1);
+}
+
+.cookie-buttons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.cookie-button-reject,
+.cookie-button-accept {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: 50px; /* Rounded buttons */
+}
+
+.cookie-button-reject {
+    background: rgba(169, 192, 226, 0.1); /* Using zoomblue with transparency */
+    color: #ffffff;
+    border: 2px solid rgba(169, 192, 226, 0.3); /* Using zoomblue with transparency */
+}
+
+.cookie-button-reject:hover {
+    background: rgba(169, 192, 226, 0.2);
+    transform: translateY(-2px);
+    border-color: rgba(169, 192, 226, 0.5);
+}
+
+.cookie-button-accept {
+    background: linear-gradient(to right, #ff8000, #ff9c40); /* Gradient with zoomorange colors */
+    color: #262662; /* Using zoomdarkblue for text */
+    border: none;
+    font-weight: 600;
+    box-shadow: 0 4px 10px rgba(255, 128, 0, 0.3);
+}
+
+.cookie-button-accept:hover {
+    background: linear-gradient(to right, #ff9c40, #ffa64d);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(255, 128, 0, 0.4);
+}
+
+@media (max-width: 992px) {
+    .cookie-container {
+        flex-direction: column;
+        padding: 1.25rem;
+    }
+
+    .cookie-content {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 1.25rem;
+        width: 100%;
+    }
+
+    .cookie-title {
+        margin-bottom: 0.75rem;
+    }
+
+    .cookie-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media (max-width: 576px) {
+    .cookie-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 0.75rem;
+    }
+    
+    .cookie-button-reject,
+    .cookie-button-accept {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+<div id="cookieConsent" class="cookie-consent">
+    <div class="cookie-container">
+        <div class="cookie-content">
+            <h3 class="cookie-title">
+                <i class="fas fa-cookie-bite"></i>
+                Cookie Policy
+            </h3>
+            <p class="cookie-text">
+                ZoomLogic Quest uses cookies to enhance your gaming experience. By continuing to use our website, you agree to the use of cookies. For more information, you can read our
+                <a href="/Policy356/" class="cookie-link">Privacy Policy</a>,
+                <a href="/Service347/" class="cookie-link">Terms of Service</a>,
+                and
+                <a href="/Cookie992/" class="cookie-link">Cookie Policy</a>.
+            </p>
+        </div>
+        
+        <div class="cookie-buttons">
+            <button id="rejectCookies" class="cookie-button-reject">
+                Reject
+            </button>
+            <button id="acceptCookies" class="cookie-button-accept">
+                Accept
+            </button>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+   const cookieConsent = document.getElementById("cookieConsent");
+   const acceptBtn = document.getElementById("acceptCookies");
+   const rejectBtn = document.getElementById("rejectCookies");
+   
+   if (!getCookie("aprenderd_cookie_consent")) {
+       setTimeout(() => {
+           cookieConsent.style.transform = "translateX(0)";
+       }, 1000);
+   }
+
+   function getCookie(name) {
+       let matches = document.cookie.match(new RegExp(
+           "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") + "=([^;]*)"
+       ));
+       return matches ? decodeURIComponent(matches[1]) : undefined;
+   }
+   
+   function setCookie(name, value, days) {
+       const date = new Date();
+       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+       const expires = "; expires=" + date.toUTCString();
+       document.cookie = name + "=" + value + expires + "; path=/; SameSite=Strict; Secure";
+   }
+
+   function handleConsent(consent) {
+       setCookie("aprenderd_cookie_consent", consent, 365);
+       cookieConsent.style.transform = "translateX(120%)";
+       
+       setTimeout(() => {
+           cookieConsent.remove();
+       }, 500);
+   }
+
+   acceptBtn.addEventListener("click", () => handleConsent("accepted"));
+   rejectBtn.addEventListener("click", () => handleConsent("rejected"));
+});
+</script>
+';
+
+if (!isset($_COOKIE["aprenderd_cookie_consent"])) {
+    echo $cookieConsentHtml;
+}
+?>
